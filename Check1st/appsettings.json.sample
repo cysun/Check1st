@@ -1,9 +1,40 @@
 {
-  "Logging": {
-    "LogLevel": {
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=check1st;Username=cysun;Password=abcd"
+  },
+  "Minio": {
+    "Endpoint": "sfo3.digitaloceanspaces.com",
+    "AccessKey": "abcd",
+    "SecretKey": "1234",
+    "Bucket": "test",
+    "PathPrefix": "",
+    "AttachmentTypes": [ ".zip" ],
+    "TextTypes": [ ".java", ".sql", ".jsp", ".txt", ".php" ]
+  },
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.File"
+    ],
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "D:/Temp/Check1st/logs/log.txt",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": null
+        }
+      }
+    ],
+    "MinimumLevel": {
       "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "Enrich": [
+      "FromLogContext"
+    ]
   },
   "AllowedHosts": "*"
 }
