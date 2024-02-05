@@ -1,5 +1,6 @@
-using Check1st.Models;
+using Check1st.Security;
 using Check1st.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,8 @@ services.AddAuthentication(options =>
 })
 .AddIdentityCookies(options => { });
 
-services.AddIdentityCore<User>()
+services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>() // need to be before AddEntityFrameworkStores
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders()
     .AddSignInManager();
@@ -47,11 +49,26 @@ services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-services.AddScoped<IUserClaimsPrincipalFactory<User>, AppUserClaimsPrincipalFactory>();
 services.AddAuthorization(options =>
 {
     options.AddPolicy("IsAdmin", policy => policy.RequireClaim("Admin"));
 });
+
+services.AddAuthorization(options =>
+{
+    options.AddPolicy(Constants.Policy.IsAdmin, policy => policy.RequireRole(Constants.Role.Admin.ToString()));
+    options.AddPolicy(Constants.Policy.IsAdminOrTeacher, policy =>
+        policy.RequireRole(Constants.Role.Admin.ToString(), Constants.Role.Teacher.ToString()));
+});
+
+services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
+services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
+
+services.AddScoped<AssignmentService>();
 
 // Build App
 

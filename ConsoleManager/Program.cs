@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Check1st.Models;
+using Check1st.Security;
 using Check1st.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,8 @@ partial class ConsoleManager
     readonly IConfiguration configuration;
     readonly ServiceProvider serviceProvider;
 
-    UserManager<User> userManager => serviceProvider.GetRequiredService<UserManager<User>>();
+    UserManager<IdentityUser> userManager => serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    RoleManager<IdentityRole> roleManager => serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     public ConsoleManager()
     {
@@ -31,7 +32,8 @@ partial class ConsoleManager
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        services.AddIdentityCore<User>()
+        services.AddIdentityCore<IdentityUser>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
@@ -42,6 +44,13 @@ partial class ConsoleManager
 
     public async Task MainControllerAsync()
     {
+        // Create roles if they don't exist
+        foreach (var role in Enum.GetValues<Constants.Role>())
+        {
+            if (!await roleManager.RoleExistsAsync(role.ToString()))
+                await roleManager.CreateAsync(new IdentityRole(role.ToString()));
+        }
+
         var done = false;
         do
         {

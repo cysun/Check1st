@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Check1st.Models;
 
@@ -18,7 +19,7 @@ public class File
 
     public DateTime TimeCreated { get; set; } = DateTime.UtcNow;
 
-    public User Owner { get; set; }
+    public IdentityUser Owner { get; set; }
 
     public string GetFormattedSize()
     {

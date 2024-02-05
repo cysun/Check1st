@@ -1,4 +1,5 @@
-﻿using Check1st.Models;
+﻿using Check1st.Security;
+using Microsoft.AspNetCore.Identity;
 
 partial class ConsoleManager
 {
@@ -45,17 +46,18 @@ partial class ConsoleManager
         var username = Console.ReadLine();
         Console.Write("\t Password: ");
         var password = Console.ReadLine();
+        Console.Write("\t Is Teacher? [y|n]: ");
+        var isTeacher = Console.ReadLine().ToLowerInvariant() == "y";
         Console.Write("\t Admin? [y|n]: ");
         var isAdmin = Console.ReadLine().ToLowerInvariant() == "y";
         Console.Write("\t Save or Cancel? [s|c] ");
         var cmd = Console.ReadLine();
         if (cmd.ToLower() == "s")
         {
-            var user = new User
+            var user = new IdentityUser
             {
                 UserName = username,
-                Email = $"{username}@localhost",
-                IsAdmin = isAdmin
+                Email = $"{username}@localhost"
             };
             var result = await userManager.CreateAsync(user, password);
             if (!result.Succeeded)
@@ -65,6 +67,17 @@ partial class ConsoleManager
                     Console.WriteLine($"\t {error.Description}");
                 Console.Write("\n\n\t Press [Enter] key to continue");
                 Console.ReadLine();
+            }
+            else
+            {
+                if (isTeacher)
+                {
+                    await userManager.AddToRoleAsync(user, Constants.Role.Teacher.ToString());
+                }
+                if (isAdmin)
+                {
+                    await userManager.AddToRoleAsync(user, Constants.Role.Admin.ToString());
+                }
             }
         }
     }
