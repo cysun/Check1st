@@ -1,0 +1,59 @@
+﻿@model List<Assignment>
+@{
+    ViewData["Title"] = "Assignments";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active me-auto">Assignments</li>
+        <li>
+            <a asp-action="Add" class="btn btn-outline-primary btn-sm" title="Add Assignment">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+        </li>
+    </ol>
+</nav>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="d-none d-lg-table-cell">Publish Date</th>
+                <th class="d-none d-lg-table-cell">Close Date</th>
+                <th class="d-none d-lg-table-cell"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="View" asp-route-id="@assignment.Id">@assignment.Name</a>
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @if (assignment.TimePublished.HasValue)
+                        {
+                            var color = assignment.IsPublished ? "" : "text-warning";
+                            <span class="@color">@assignment.TimePublished?.ToLocalTime().ToString("d")</span>
+                        }
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @if (assignment.TimeClosed.HasValue)
+                        {
+                            var color = assignment.IsClosed ? "" : "text-warning";
+                            <span class="@color">@assignment.TimeClosed?.ToLocalTime().ToString("d")</span>
+                        }
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        <a asp-action="Edit" asp-route-id="@assignment.Id" title="Edit Assignment"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

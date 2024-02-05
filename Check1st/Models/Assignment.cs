@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Check1st.Models;
 
@@ -19,6 +18,7 @@ public class Assignment
     public bool IsPublished => TimePublished.HasValue && TimePublished < DateTime.UtcNow;
     public bool IsClosed => TimeClosed.HasValue && TimeClosed < DateTime.UtcNow;
 
-    public IdentityUser Owner { get; set; }
+    public string TeacherName { get; set; }
 
+    public bool IsDeleted { get; set; }
 }

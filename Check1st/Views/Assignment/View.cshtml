@@ -1,0 +1,54 @@
+﻿@model Assignment
+@{
+    ViewData["Title"] = "View Assignment";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item d-none d-lg-block"><a asp-action="Index">Assignments</a></li>
+        <li class="breadcrumb-item active me-auto">@Model.Name</li>
+        <li>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm" title="Edit Assignment">
+                <i class="bi bi-pencil-fill"></i>
+            </a>
+        </li>
+    </ol>
+</nav>
+
+<div class="card mb-3">
+    <div class="card-header">Description</div>
+    <div class="card-body">
+        @Html.Raw(Model.Description)
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Prompt</div>
+    <div class="card-body">@Model.Prompt</div>
+</div>
+
+<div class="row row-cols-2 row-cols-md-4 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Publish <span class="d-none d-md-inline">Date</span></div>
+            <div class="card-body">
+                @if (Model.TimePublished.HasValue)
+                {
+                    var color = Model.IsPublished ? "" : "text-warning";
+                    <span class="@color">@Model.TimePublished?.ToLocalTime().ToString("d")</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Close <span class="d-none d-md-inline">Date</span></div>
+            <div class="card-body">
+                @if (Model.TimeClosed.HasValue)
+                {
+                    var color = Model.IsClosed ? "" : "text-warning";
+                    <span class="@color">@Model.TimeClosed?.ToLocalTime().ToString("d")</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>

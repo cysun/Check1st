@@ -30,13 +30,13 @@
                             @if ((await AuthorizationService.AuthorizeAsync(User, Constants.Policy.IsAdmin)).Succeeded)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Users" asp-action="Index">Users</a>
+                                    <a class="nav-link" asp-controller="User" asp-action="Index">Users</a>
                                 </li>
                             }
                             @if ((await AuthorizationService.AuthorizeAsync(User, Constants.Policy.IsAdminOrTeacher)).Succeeded)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Assignments" asp-action="Index">Assignments</a>
+                                    <a class="nav-link" asp-controller="Assignment" asp-action="Index">Assignments</a>
                                 </li>
                             }
                             <li class="nav-item">

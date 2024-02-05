@@ -14,9 +14,31 @@ public class AssignmentService
 
     public Assignment GetAssignment(int id) => _db.Assignments.Find(id);
 
-    public List<Assignment> GetAssignments() => _db.Assignments.AsNoTracking()
+    public List<Assignment> GetAssignments() => _db.Assignments.AsNoTracking().Where(a => !a.IsDeleted)
         .OrderByDescending(a => a.TimeClosed).ThenBy(a => a.Name)
         .ToList();
+
+    public void AddAssignment(Assignment assignment)
+    {
+        _db.Assignments.Add(assignment);
+        _db.SaveChanges();
+    }
+
+    public void DeleteAssignment(Assignment assignment)
+    {
+        if (assignment.IsDeleted) return;
+
+        if (assignment.IsPublished)
+        {
+            assignment.IsDeleted = true;
+        }
+        else
+        {
+            _db.Assignments.Remove(assignment);
+        }
+
+        _db.SaveChanges();
+    }
 
     public void SaveChanges() => _db.SaveChanges();
 }

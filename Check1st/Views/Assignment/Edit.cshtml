@@ -1,0 +1,82 @@
+﻿@model AssignmentInputModel
+@{
+    ViewData["Title"] = "Edit Assignment";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Assignments</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@ViewBag.Assignment.Id">@Model.Name</a></li>
+        <li class="breadcrumb-item active me-auto">Edit</li>
+        <li>
+            <button id="delete" class="btn btn-outline-danger btn-sm" title="Delete Assignment">
+                <i class="bi bi-trash-fill"></i>
+            </button>
+        </li>
+    </ol>
+</nav>
+
+<form method="post">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-floating mb-3">
+                <input asp-for="Name" class="form-control" placeholder="Name" required>
+                <label asp-for="Name"></label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="mb-3">
+                <textarea asp-for="Description" class="form-control"></textarea>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="mb-3">
+                <textarea asp-for="Prompt" class="form-control" placeholder="Prompt"></textarea>
+                <div class="form-text">
+                    <em>Prompt</em> helps set the behavior of the AI. If you are not sure, leave it blank, and the system will
+                    use the default prompt "You are a helpful assistant".
+                </div>
+            </div>
+        </div>
+        @if (Model.IsPublished)
+        {
+            <div class="col-6">
+                <div class="form-floating mb-3">
+                    <span class="form-control">@Model.TimePublished?.ToLocalTime().ToString("g")</span>
+                    <label>Publish Time</label>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-6">
+                <div class="form-floating mb-3">
+                    <input asp-for="TimePublished" class="form-control">
+                    <label asp-for="TimePublished"></label>
+                </div>
+            </div>
+        }
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="TimeClosed" class="form-control">
+                <label asp-for="TimeClosed"></label>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-secondary me-2" asp-action="Index">Cancel</a>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/4jeuqf3mhgytuk82mowljcxt0pbcbem4ivn5xorph63kjcfg/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="~/tinymce-options.js"></script>
+    <script>
+        $(function () {
+            tinymce.init(tinymceOptions.basic("textarea#Description"));
+            $("#delete").click(function () {
+                if (confirm("Do you want to delete this survey?"))
+                    window.location.href = "../delete/" + @ViewBag.Assignment.Id;
+            });
+        });
+    </script>
+}
