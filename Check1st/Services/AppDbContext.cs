@@ -12,13 +12,14 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     {
     }
 
+    public DbSet<Models.File> Files { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
+    public DbSet<Consultation> Consultations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+
+        builder.Entity<Consultation>().HasMany(c => c.Files).WithMany().UsingEntity("ConsultationFiles"); ;
     }
 }

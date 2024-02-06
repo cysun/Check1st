@@ -1,11 +1,15 @@
-﻿<div class="p-5 bg-body-tertiary rounded-3">
+﻿@model List<Assignment>
+<div class="p-4 bg-body-tertiary rounded-3">
     <div>
         <p class="fs-5">
             Check1st uses AI to check your assignment and give you feedback.
         </p>
         @if (User.Identity.IsAuthenticated)
         {
-            <a class="btn btn-warning btn-lg" role="button" asp-controller="Account" asp-action="Logout">Logout</a>
+            if (Model?.Count > 0)
+            {
+                <p>Please select an assignment below:</p>
+            }
         }
         else
         {
@@ -13,3 +17,16 @@
         }
     </div>
 </div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-1">
+        @foreach (var assignment in Model)
+        {
+            <div class="col d-grid">
+                <a asp-controller="Consultation" asp-action="Assignment" asp-route-id="@assignment.Id"
+                   class="btn btn-outline-primary btn-lg">@assignment.Name</a>
+            </div>
+        }
+    </div>
+}

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
+using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
-using Minio;
 
 namespace Check1st.Services;
 
@@ -54,9 +54,9 @@ public class MinioService
         return _settings.TextTypes.Contains(Path.GetExtension(fileName).ToLower());
     }
 
-    public string GetObjectName(Models.File file) => GetObjectName(file.Id, file.Version);
+    public string GetObjectName(Models.File file) => GetObjectName(file.Id);
 
-    public string GetObjectName(int fileId, int version) => $"{_settings.PathPrefix}{fileId}-{version}";
+    public string GetObjectName(int fileId) => $"{_settings.PathPrefix}{fileId}";
 
     public async Task UploadFileAsync(Models.File file, IFormFile uploadedFile)
     {
@@ -89,16 +89,16 @@ public class MinioService
 
         var args = new PresignedGetObjectArgs()
             .WithBucket(_settings.Bucket)
-            .WithObject($"{_settings.PathPrefix}{file.Id}-{file.Version}")
+            .WithObject(GetObjectName(file))
             .WithExpiry(10) // Download link valid for 10 seconds
             .WithHeaders(reqParams);
 
         return await _client.PresignedGetObjectAsync(args);
     }
 
-    public async Task DeleteFileAsync(int fileId, int version)
+    public async Task DeleteFileAsync(int fileId)
     {
-        var objectName = GetObjectName(fileId, version);
+        var objectName = GetObjectName(fileId);
         var args = new RemoveObjectArgs()
             .WithBucket(_settings.Bucket)
             .WithObject(objectName);

@@ -1,4 +1,7 @@
-﻿DROP TABLE "Assignments";
+﻿DROP TABLE "ConsultationFiles";
+DROP TABLE "Consultations";
+DROP TABLE "Assignments";
+DROP TABLE "Files";
 
 DROP TABLE "AspNetUserTokens";
 DROP TABLE "AspNetUserRoles";

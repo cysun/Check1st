@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Check1st.Models;
 
@@ -10,8 +9,6 @@ public class File
     [Required, MaxLength(1000)]
     public string Name { get; set; }
 
-    public int Version { get; set; } = 1;
-
     [MaxLength(255)]
     public string ContentType { get; set; }
 
@@ -19,7 +16,7 @@ public class File
 
     public DateTime TimeCreated { get; set; } = DateTime.UtcNow;
 
-    public IdentityUser Owner { get; set; }
+    public string OwnerName { get; set; }
 
     public string GetFormattedSize()
     {
@@ -30,22 +27,4 @@ public class File
         else
             return (Size / 1024.0 / 1024.0).ToString("0.#") + " MB";
     }
-}
-
-public class FileRevision
-{
-    public int FileId { get; set; }
-    public File File { get; set; }
-
-    [Required, MaxLength(1000)]
-    public string Name { get; set; }
-
-    public int Version { get; set; }
-
-    [MaxLength(255)]
-    public string ContentType { get; set; }
-
-    public long Size { get; set; }
-
-    public DateTime TimeCreated { get; set; }
 }

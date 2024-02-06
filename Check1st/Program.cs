@@ -69,6 +69,7 @@ services.Configure<ForwardedHeadersOptions>(options =>
 services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
 services.AddScoped<AssignmentService>();
+services.AddScoped<ConsultationService>();
 
 // Build App
 
