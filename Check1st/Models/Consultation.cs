@@ -11,7 +11,7 @@ public class Consultation
 
     public List<File> Files { get; set; } = new List<File>();
 
-    public DateTime? TimeCreated { get; set; }
+    public DateTime TimeCreated { get; set; } = DateTime.UtcNow;
     public DateTime? TimeCompleted { get; set; }
 
     public bool IsCompleted => TimeCompleted != null;
@@ -20,4 +20,10 @@ public class Consultation
 
     public int? FeedbackRating { get; set; } // student's rating of the feeback: 1-5
     public string FeedbackComment { get; set; } // student's comment of the feedback
+
+    public void AddFile(File file)
+    {
+        Files.RemoveAll(f => f.Name == file.Name);
+        Files.Add(file);
+    }
 }

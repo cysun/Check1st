@@ -68,6 +68,10 @@ services.Configure<ForwardedHeadersOptions>(options =>
 
 services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
+services.Configure<MinioSettings>(configuration.GetSection("Minio"));
+services.AddSingleton<MinioService>();
+services.AddScoped<FileService>();
+
 services.AddScoped<AssignmentService>();
 services.AddScoped<ConsultationService>();
 

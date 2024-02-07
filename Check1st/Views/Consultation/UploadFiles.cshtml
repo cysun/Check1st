@@ -1,0 +1,63 @@
+﻿@model Consultation
+@{
+    ViewData["Title"] = "Consultation";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active">@Model.Assignment.Name</li>
+    </ol>
+</nav>
+
+<form id="uploadForm" asp-action="UploadFiles" class="dropzone" method="post" enctype="multipart/form-data"></form>
+
+<table class="table table-hover table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="d-none d-md-table-cell">Size</th>
+            <th class="d-none d-lg-table-cell">Uploaded</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in Model.Files)
+        {
+            <tr>
+                <td><a asp-controller="File" asp-action="View" asp-route-id="@file.Id">@file.Name</a></td>
+                <td class="d-none d-md-table-cell">@file.GetFormattedSize()</td>
+                <td class="d-none d-lg-table-cell">@file.TimeCreated.ToString("d")</td>
+                <td>
+                    <a asp-action="RemoveFile" asp-route-id="@Model.Id" asp-route-fileId="@file.Id"
+                       class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section StyleSheets {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+          integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"
+            integrity="sha512-oQq8uth41D+gIH/NJvSJvVB85MFk1eWpMK6glnkg6I7EdMqC1XVkW7RxLheXwmFdG03qScCM7gKS/Cx3FYt7Tg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Dropzone.options.uploadForm = {
+            uploadMultiple: true,
+            // uploadMultiple is true, Dropzone add [] to paramName. For some reason ASP.NET Core does not
+            // bind it to a collection like for other parameter types. The paramName functio trick is from
+            // https://stackoverflow.com/questions/58815724/how-to-integrate-dropzone-js-with-asp-net-core-mvc
+            paramName: () => "uploadedFiles",
+            parallelUploads: 10,
+            queuecomplete: function () {
+                location.reload();
+            }
+        };
+    </script>
+}

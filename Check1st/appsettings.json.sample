@@ -8,8 +8,7 @@
     "SecretKey": "1234",
     "Bucket": "test",
     "PathPrefix": "",
-    "AttachmentTypes": [ ".zip" ],
-    "TextTypes": [ ".java", ".sql", ".jsp", ".txt", ".php" ]
+    "NonTextTypes": [ ".docx", ".doc", ".xls", ".xlsx" ]
   },
   "Serilog": {
     "Using": [

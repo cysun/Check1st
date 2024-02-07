@@ -13,16 +13,8 @@ public class MinioSettings
     public string Bucket { get; set; } // Space for DigitalOcean
     public string PathPrefix { get; set; } // E.g. "mynotes/", or "" if no folder is used
 
-    // Attachment Types are files (e.g. zip) whose Content-Disposition header should be
-    // set to attachment even for View File operation. These files cannot be displayed
-    // directly in browser so browsers will try to save them. Providing a file name ensures
-    // that the file is saved with the right name instead of having id as its name.
-    public HashSet<string> AttachmentTypes { get; set; }
-
-    // Text Types are files (e.g. java) that should be displayed directly in browser.
-    // Browsers may not display them because of their content types, so we'll overwrite
-    // their content types with "text/plain".
-    public HashSet<string> TextTypes { get; set; }
+    // Files are treated as plain text unless specified here.
+    public HashSet<string> NonTextTypes { get; set; }
 }
 
 public class MinioService
@@ -44,14 +36,9 @@ public class MinioService
         _logger = logger;
     }
 
-    public bool IsAttachmentType(string fileName)
+    public bool IsNonTextType(string fileName)
     {
-        return _settings.AttachmentTypes.Contains(Path.GetExtension(fileName).ToLower());
-    }
-
-    public bool IsTextType(string fileName)
-    {
-        return _settings.TextTypes.Contains(Path.GetExtension(fileName).ToLower());
+        return _settings.NonTextTypes.Contains(Path.GetExtension(fileName).ToLower());
     }
 
     public string GetObjectName(Models.File file) => GetObjectName(file.Id);
@@ -81,10 +68,9 @@ public class MinioService
 
     public async Task<string> GetDownloadUrlAsync(Models.File file, bool inline = false)
     {
-        inline = inline && !IsAttachmentType(file.Name);
         var reqParams = new Dictionary<string, string> {
-            { "response-content-type", IsTextType(file.Name)? "text/plain" : file.ContentType },
-            {"response-content-disposition", inline ? "inline" : @$"attachment; filename=""{file.Name}"""}
+            { "response-content-type", IsNonTextType(file.Name)? file.ContentType : "text/plain"  },
+            { "response-content-disposition", inline ? "inline" : @$"attachment; filename=""{file.Name}""" }
         };
 
         var args = new PresignedGetObjectArgs()
