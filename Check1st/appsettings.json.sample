@@ -2,14 +2,6 @@
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=check1st;Username=cysun;Password=abcd"
   },
-  "Minio": {
-    "Endpoint": "sfo3.digitaloceanspaces.com",
-    "AccessKey": "abcd",
-    "SecretKey": "1234",
-    "Bucket": "test",
-    "PathPrefix": "",
-    "NonTextTypes": [ ".docx", ".doc", ".xls", ".xlsx" ]
-  },
   "Serilog": {
     "Using": [
       "Serilog.Sinks.File"

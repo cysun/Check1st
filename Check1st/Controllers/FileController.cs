@@ -15,12 +15,7 @@ namespace Check1st.Controllers
             _fileService = fileService;
         }
 
-        public async Task<IActionResult> ViewAsync(int id)
-        {
-            return await DownloadAsync(id, true);
-        }
-
-        public async Task<IActionResult> DownloadAsync(int id, bool inline = false)
+        public IActionResult View(int id, bool inline = false)
         {
             var file = _fileService.GetFile(id);
             if (file == null) return NotFound();
@@ -28,7 +23,7 @@ namespace Check1st.Controllers
             if (User.Identity.Name == file.OwnerName || User.IsInRole(Constants.Role.Admin.ToString())
                 || User.IsInRole(Constants.Role.Teacher.ToString()))
             {
-                return Redirect(await _fileService.GetDownloadUrlAsync(file, inline));
+                return View(file);
             }
             else
             {

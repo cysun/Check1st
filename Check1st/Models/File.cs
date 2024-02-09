@@ -14,7 +14,7 @@ public class File
 
     public long Size { get; set; }
 
-    public DateTime TimeCreated { get; set; } = DateTime.UtcNow;
+    public DateTime TimeUploaded { get; set; } = DateTime.UtcNow;
 
     public string OwnerName { get; set; }
 
@@ -27,4 +27,13 @@ public class File
         else
             return (Size / 1024.0 / 1024.0).ToString("0.#") + " MB";
     }
+
+    // Put content, which can be large, in a separate identity so it can be loaded on demand
+    public FileContent Content { get; set; }
+}
+
+public class FileContent
+{
+    public int Id { get; set; } // Use the same Id as the file
+    public string Text { get; set; }
 }

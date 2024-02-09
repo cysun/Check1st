@@ -13,7 +13,7 @@ public class ConsultationService
     }
 
     public Consultation GetConsultation(int id) => _db.Consultations.Where(c => c.Id == id)
-        .Include(c => c.Assignment).Include(c => c.Files.OrderBy(f => f.TimeCreated))
+        .Include(c => c.Assignment).Include(c => c.Files.OrderBy(f => f.TimeUploaded))
         .FirstOrDefault();
 
     public List<Consultation> GetConsultations(int assignmentId, string studentName) => _db.Consultations.AsNoTracking()

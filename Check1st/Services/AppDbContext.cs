@@ -20,6 +20,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         base.OnModelCreating(builder);
 
+        builder.Entity<Models.File>().HasOne(f => f.Content).WithOne().HasForeignKey<FileContent>();
         builder.Entity<Consultation>().HasMany(c => c.Files).WithMany().UsingEntity("ConsultationFiles"); ;
     }
 }

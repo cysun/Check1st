@@ -1,0 +1,11 @@
+﻿@model File
+@{
+    ViewData["Title"] = "File";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<pre class="border p-3">@Model.Content.Text</pre>
