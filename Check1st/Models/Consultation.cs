@@ -19,7 +19,7 @@ public class Consultation
     public string Feedback { get; set; }
 
     public int? FeedbackRating { get; set; } // student's rating of the feeback: 1-5
-    public string FeedbackComment { get; set; } // student's comment of the feedback
+    public string FeedbackComments { get; set; } // student's comment of the feedback
 
     public void AddFile(File file)
     {

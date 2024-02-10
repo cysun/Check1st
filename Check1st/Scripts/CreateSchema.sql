@@ -107,7 +107,7 @@ CREATE TABLE "Consultations" (
     "TimeCompleted" timestamp with time zone,
     "Feedback" text,
     "FeedbackRating" integer,
-    "FeedbackComment" text,
+    "FeedbackComments" text,
     CONSTRAINT "PK_Consultations" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Consultations_Assignments_AssignmentId" FOREIGN KEY ("AssignmentId") REFERENCES "Assignments" ("Id") ON DELETE CASCADE
 );
@@ -146,7 +146,7 @@ CREATE INDEX "IX_ConsultationFiles_FilesId" ON "ConsultationFiles" ("FilesId");
 CREATE INDEX "IX_Consultations_AssignmentId" ON "Consultations" ("AssignmentId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240209003241_InitialSchema', '8.0.1');
+VALUES ('20240210064820_InitialSchema', '8.0.1');
 
 COMMIT;
 

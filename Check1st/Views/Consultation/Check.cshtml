@@ -1,0 +1,94 @@
+﻿@model Consultation
+@{
+    ViewData["Title"] = "Consultation";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active">@Model.Assignment.Name</li>
+    </ol>
+</nav>
+
+<table class="table table-hover table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="d-none d-sm-table-cell">Size</th>
+            <th class="d-none d-md-table-cell">Uploaded</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in Model.Files)
+        {
+            <tr>
+                <td><a asp-controller="File" asp-action="View" asp-route-id="@file.Id">@file.Name</a></td>
+                <td class="d-none d-sm-table-cell">@file.GetFormattedSize()</td>
+                <td class="d-none d-md-table-cell">@file.TimeUploaded.ToString("d")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="border p-3">@Html.Raw(Model.Feedback)</div>
+
+<p class="mt-3 fs-5">What do you think of the AI feedback on your work?</p>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td data-value="1" data-class="bg-danger" class="@(Model.FeedbackRating == 1 ? "bg-danger" : null)">
+                    <strong>Not Helpful</strong><br>
+                    <small class="d-none d-md-inline">
+                        The feedback is irrelevant, incorrect, or confusing.
+                    </small>
+                </td>
+                <td data-value="2" data-class="bg-warning" class="@(Model.FeedbackRating == 2 ? "bg-warning" : null)">
+                    <strong>Slightly Helpful</strong><br>
+                    <small class="d-none d-md-inline">
+                        The feedback contains some elements of value but is largely inadequate.
+                    </small>
+                </td>
+                <td data-value="3" data-class="bg-info" class="@(Model.FeedbackRating == 3 ? "bg-info" : null)">
+                    <strong>Helpful</strong><br>
+                    <small class="d-none d-md-inline">
+                        The feedback is mostly relevant and correct, and provides some useful information or assistance.
+                    </small>
+                </td>
+                <td data-value="4" data-class="bg-success" class="@(Model.FeedbackRating == 4 ? "bg-success" : null)">
+                    <strong>Very Helpful</strong><br>
+                    <small class="d-none d-md-inline">
+                        The feedback is clear and accurate, and provides insightful information or solution.
+                    </small>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="feedbackComments" class="form-label">Additional comments on the AI feedback:</label>
+        <textarea class="form-control" id="feedbackComments" name="feedbackComments" rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary">Complete</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("td").click(function () {
+                $.ajax({
+                    url: "@Context.Request.PathBase/Consultation/@Model.Id/FeedbackRating",
+                    method: "put",
+                    data: { rating: $(this).data("value") },
+                    context: this,
+                    success: function () {
+                        $("td").removeClass();
+                        $(this).addClass($(this).attr("data-class"));
+                    }
+                });
+            });
+        });
+    </script>
+}

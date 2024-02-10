@@ -38,7 +38,10 @@ namespace Check1st.Controllers
                     Assignment = assignment,
                     StudentName = User.Identity.Name,
                 };
+                if (lastConsultation != null)
+                    consultation.Files.AddRange(lastConsultation.Files);
                 _consultationService.AddConsultation(consultation);
+                _logger.LogInformation("{user} created consultation {consultation}", User.Identity.Name, consultation.Id);
                 return RedirectToAction("UploadFiles", new { id = consultation.Id });
             }
         }
@@ -50,7 +53,8 @@ namespace Check1st.Controllers
             if (consultation == null || consultation.StudentName != User.Identity.Name)
                 return NotFound();
 
-            if (consultation.IsCompleted) return RedirectToAction("Rate", new { id });
+            if (consultation.IsCompleted)
+                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
 
             return View(consultation);
         }
@@ -62,12 +66,15 @@ namespace Check1st.Controllers
             if (consultation == null || consultation.StudentName != User.Identity.Name)
                 return NotFound();
 
-            if (consultation.IsCompleted) return RedirectToAction("Rate", new { id });
+            if (consultation.IsCompleted)
+                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
 
             foreach (var uploadedFile in uploadedFiles)
             {
                 var file = await _fileService.UploadFileAsync(uploadedFile, User.Identity.Name);
                 consultation.AddFile(file);
+                _logger.LogInformation("{user} uploaded file {file} to consultation {consultation}",
+                    User.Identity.Name, file.Id, consultation.Id);
             }
             _consultationService.SaveChanges();
 
@@ -80,10 +87,69 @@ namespace Check1st.Controllers
             if (consultation == null || consultation.StudentName != User.Identity.Name)
                 return NotFound();
 
+            if (consultation.IsCompleted)
+                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+
             consultation.Files.RemoveAll(f => f.Id == fileId);
             _consultationService.SaveChanges();
+            _logger.LogInformation("{user} removed file {file} from consultation {consultation}",
+                User.Identity.Name, fileId, consultation.Id);
 
             return RedirectToAction("UploadFiles", new { id });
+        }
+
+        [HttpGet]
+        public IActionResult Check(int id)
+        {
+            var consultation = _consultationService.GetConsultation(id);
+            if (consultation == null || consultation.StudentName != User.Identity.Name)
+                return NotFound();
+
+            if (consultation.IsCompleted)
+                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+
+            // send consultation to OpenAI
+            consultation.Feedback = "This is a great job!";
+            _consultationService.SaveChanges();
+            _logger.LogInformation("{user} received feedback for consultation {consultation}",
+                User.Identity.Name, consultation.Id);
+
+            return View(consultation);
+        }
+
+        [HttpPost]
+        public IActionResult Check(int id, string feedbackComments)
+        {
+            var consultation = _consultationService.GetConsultation(id);
+            if (consultation == null || consultation.StudentName != User.Identity.Name)
+                return NotFound();
+
+            if (consultation.IsCompleted)
+                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+
+            consultation.FeedbackComments = feedbackComments;
+            consultation.TimeCompleted = DateTime.UtcNow;
+            _consultationService.SaveChanges();
+            _logger.LogInformation("{user} completed consultation {consultation}", User.Identity.Name, consultation.Id);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPut("Consultation/{id}/FeedbackRating")]
+        public IActionResult RateFeedback(int id, int rating)
+        {
+            var consultation = _consultationService.GetConsultation(id);
+            if (consultation == null || consultation.StudentName != User.Identity.Name)
+                return NotFound();
+
+            if (consultation.IsCompleted)
+                return BadRequest("This consultation is already completed");
+
+            consultation.FeedbackRating = rating;
+            _consultationService.SaveChanges();
+            _logger.LogInformation("{user} rated feedback for consultation {consultation}", User.Identity.Name, consultation.Id);
+
+            return Ok();
         }
     }
 }

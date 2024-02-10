@@ -21,10 +21,14 @@ public class ConsultationService
         .OrderByDescending(c => c.TimeCreated)
         .ToList();
 
-    public Consultation GetLastConsultation(int assignmentId, string studentName) => _db.Consultations.AsNoTracking()
-        .Where(c => c.Assignment.Id == assignmentId && c.StudentName == studentName)
-        .OrderByDescending(c => c.TimeCreated)
-        .FirstOrDefault();
+    public Consultation GetLastConsultation(int assignmentId, string studentName)
+    {
+        var consultation = _db.Consultations.Where(c => c.Assignment.Id == assignmentId && c.StudentName == studentName)
+            .OrderByDescending(c => c.TimeCreated).FirstOrDefault();
+        if (consultation != null)
+            _db.Entry(consultation).Collection(c => c.Files).Load();
+        return consultation;
+    }
 
     public void AddConsultation(Consultation consultation)
     {
