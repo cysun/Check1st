@@ -2,6 +2,10 @@
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=check1st;Username=cysun;Password=abcd"
   },
+  "AI": {
+    "ApiKey": "123456",
+    "Model": "gpt-3.5-turbo"
+  },
   "Serilog": {
     "Using": [
       "Serilog.Sinks.File"

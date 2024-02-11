@@ -8,15 +8,17 @@ namespace Check1st.Controllers
     [Authorize]
     public class ConsultationController : Controller
     {
+        private readonly AIService _aiService;
         private readonly FileService _fileService;
         private readonly AssignmentService _assignmentService;
         private readonly ConsultationService _consultationService;
 
         private readonly ILogger<ConsultationController> _logger;
 
-        public ConsultationController(FileService fileService, AssignmentService assignmentService,
+        public ConsultationController(AIService aiService, FileService fileService, AssignmentService assignmentService,
             ConsultationService consultationService, ILogger<ConsultationController> logger)
         {
+            _aiService = aiService;
             _fileService = fileService;
             _assignmentService = assignmentService;
             _consultationService = consultationService;
@@ -99,7 +101,7 @@ namespace Check1st.Controllers
         }
 
         [HttpGet]
-        public IActionResult Check(int id)
+        public async Task<IActionResult> CheckAsync(int id)
         {
             var consultation = _consultationService.GetConsultation(id);
             if (consultation == null || consultation.StudentName != User.Identity.Name)
@@ -108,8 +110,8 @@ namespace Check1st.Controllers
             if (consultation.IsCompleted)
                 return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
 
-            // send consultation to OpenAI
-            consultation.Feedback = "This is a great job!";
+            consultation.Files.ForEach(f => _fileService.LoadContent(f));
+            consultation.Feedback = await _aiService.ConsultAsync(consultation);
             _consultationService.SaveChanges();
             _logger.LogInformation("{user} received feedback for consultation {consultation}",
                 User.Identity.Name, consultation.Id);

@@ -47,5 +47,10 @@ public class FileService
         return file;
     }
 
+    public void LoadContent(Models.File file)
+    {
+        _db.Entry(file).Reference(f => f.Content).Load();
+    }
+
     public void SaveChanges() => _db.SaveChanges();
 }

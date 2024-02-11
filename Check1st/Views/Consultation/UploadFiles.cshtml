@@ -39,7 +39,7 @@
 </table>
 
 <div>
-    <a asp-action="Check" asp-route-id="@Model.Id" class="btn btn-primary">Check</a>
+    <button id="check" type="button" class="btn btn-primary">Check</button>
 </div>
 
 @section StyleSheets {
@@ -63,5 +63,12 @@
                 location.reload();
             }
         };
+        $(function () {
+            $("#check").click(function () {
+                $(this).prop("disabled", true);
+                $(this).html("<span class='spinner-border spinner-border-sm'></span>");
+                window.location.href = "@Context.Request.PathBase/Consultation/Check/@Model.Id";
+            });
+        });
     </script>
 }

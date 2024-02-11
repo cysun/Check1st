@@ -6,6 +6,6 @@ tinymceOptions.basic = (selector, height) => ({
     menubar: false,
     convert_urls: false,
     browser_spellcheck: true,
-    toolbar: "bold italic underline bullist numlist link fullscreen",
+    toolbar: "bold italic underline bullist numlist link image code fullscreen",
     height: height ? height : 350
 });

@@ -66,6 +66,9 @@ services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
+services.Configure<AISettings>(configuration.GetSection("AI"));
+services.AddSingleton<AIService>();
+
 services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
 services.AddScoped<FileService>();
