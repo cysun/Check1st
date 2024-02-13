@@ -48,6 +48,15 @@ namespace Check1st.Controllers
             }
         }
 
+        public IActionResult View(int id)
+        {
+            var consultation = _consultationService.GetConsultation(id);
+            if (consultation == null || consultation.StudentName != User.Identity.Name)
+                return NotFound();
+
+            return View(consultation);
+        }
+
         [HttpGet]
         public IActionResult UploadFiles(int id)
         {
@@ -108,13 +117,13 @@ namespace Check1st.Controllers
                 return NotFound();
 
             if (consultation.IsCompleted)
-                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+                return RedirectToAction("View", new { id });
 
             consultation.Files.ForEach(f => _fileService.LoadContent(f));
-            consultation.Feedback = await _aiService.ConsultAsync(consultation);
+            var success = await _aiService.ConsultAsync(consultation);
             _consultationService.SaveChanges();
-            _logger.LogInformation("{user} received feedback for consultation {consultation}",
-                User.Identity.Name, consultation.Id);
+            _logger.LogInformation("{user} received feedback for consultation {consultation}. Success: {success}",
+                User.Identity.Name, consultation.Id, success);
 
             return View(consultation);
         }
@@ -127,7 +136,7 @@ namespace Check1st.Controllers
                 return NotFound();
 
             if (consultation.IsCompleted)
-                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+                return BadRequest("This consultation is already completed");
 
             consultation.FeedbackComments = feedbackComments;
             consultation.TimeCompleted = DateTime.UtcNow;

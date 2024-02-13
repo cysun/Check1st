@@ -15,13 +15,16 @@ public class AIService
     private readonly AISettings _settings;
     private readonly OpenAIClient _client;
 
-    public AIService(IOptions<AISettings> settings)
+    private readonly ILogger<AIService> _logger;
+
+    public AIService(IOptions<AISettings> settings, ILogger<AIService> logger)
     {
         _settings = settings.Value;
         _client = new OpenAIClient(_settings.ApiKey);
+        _logger = logger;
     }
 
-    public async Task<string> ConsultAsync(Consultation consultation)
+    public async Task<bool> ConsultAsync(Consultation consultation)
     {
         var chatCompletionOptions = new ChatCompletionsOptions
         {
@@ -36,6 +39,22 @@ public class AIService
             chatCompletionOptions.Messages.Add(new ChatRequestUserMessage(file.Content.Text));
 
         var response = await _client.GetChatCompletionsAsync(chatCompletionOptions);
-        return response.Value.Choices[0].Message.Content;
+        consultation.Feedback = response.Value.Choices[0].Message.Content;
+        consultation.Model = _settings.Model;
+        consultation.PromptTokens = response.Value.Usage.PromptTokens;
+        consultation.CompletionTokens = response.Value.Usage.CompletionTokens;
+
+        bool success = response.Value.Choices[0].FinishReason == CompletionsFinishReason.Stopped;
+        if (success)
+        {
+            _logger.LogInformation("Consultation {id} finished successfully", consultation.Id);
+        }
+        else
+        {
+            _logger.LogWarning("Consultation {id} did not finish successfully: {reason}\n{details}", consultation.Id,
+                response.Value.Choices[0].FinishReason, response.Value.Choices[0].FinishDetails);
+        }
+
+        return success;
     }
 }
