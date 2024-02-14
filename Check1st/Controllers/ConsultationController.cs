@@ -119,11 +119,14 @@ namespace Check1st.Controllers
             if (consultation.IsCompleted)
                 return RedirectToAction("View", new { id });
 
-            consultation.Files.ForEach(f => _fileService.LoadContent(f));
-            var success = await _aiService.ConsultAsync(consultation);
-            _consultationService.SaveChanges();
-            _logger.LogInformation("{user} received feedback for consultation {consultation}. Success: {success}",
-                User.Identity.Name, consultation.Id, success);
+            if (consultation.Feedback == null)
+            {
+                consultation.Files.ForEach(f => _fileService.LoadContent(f));
+                var success = await _aiService.ConsultAsync(consultation);
+                _consultationService.SaveChanges();
+                _logger.LogInformation("{user} received feedback for consultation {consultation}. Success: {success}",
+                    User.Identity.Name, consultation.Id, success);
+            }
 
             return View(consultation);
         }
