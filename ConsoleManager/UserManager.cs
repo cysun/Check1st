@@ -1,5 +1,5 @@
-﻿using Check1st.Security;
-using Microsoft.AspNetCore.Identity;
+﻿using Check1st.Models;
+using Check1st.Security;
 
 partial class ConsoleManager
 {
@@ -54,7 +54,7 @@ partial class ConsoleManager
         var cmd = Console.ReadLine();
         if (cmd.ToLower() == "s")
         {
-            var user = new IdentityUser
+            var user = new User
             {
                 UserName = username,
                 Email = $"{username}@localhost"

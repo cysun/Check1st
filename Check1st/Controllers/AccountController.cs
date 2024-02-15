@@ -9,13 +9,13 @@ namespace Check1st.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
         private readonly IMapper _mapper;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
             IMapper mapper, ILogger<AccountController> logger)
         {
             _userManager = userManager;
@@ -36,6 +36,13 @@ namespace Check1st.Controllers
             if (!ModelState.IsValid) return View(input);
 
             returnUrl ??= Url.Content("~/");
+
+            var user = await _userManager.FindByNameAsync(input.Username);
+            if (user != null && user.IsExpired)
+            {
+                ModelState.AddModelError(string.Empty, "Your account has expired. Please contact your instructor.");
+                return View(input);
+            }
 
             var result = await _signInManager.PasswordSignInAsync(input.Username, input.Password, input.RememberMe, lockoutOnFailure: true);
             if (result.Succeeded)

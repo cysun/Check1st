@@ -16,6 +16,7 @@ CREATE TABLE "AspNetRoles" (
 
 CREATE TABLE "AspNetUsers" (
     "Id" text NOT NULL,
+    "ExpirationDate" timestamp with time zone,
     "UserName" character varying(256),
     "NormalizedUserName" character varying(256),
     "Email" character varying(256),
@@ -149,7 +150,7 @@ CREATE INDEX "IX_ConsultationFiles_FilesId" ON "ConsultationFiles" ("FilesId");
 CREATE INDEX "IX_Consultations_AssignmentId" ON "Consultations" ("AssignmentId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240213060701_InitialSchema', '8.0.1');
+VALUES ('20240215230626_InitialSchema', '8.0.1');
 
 COMMIT;
 

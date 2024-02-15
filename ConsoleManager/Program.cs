@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using Check1st.Models;
 using Check1st.Security;
 using Check1st.Services;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ partial class ConsoleManager
     readonly IConfiguration configuration;
     readonly ServiceProvider serviceProvider;
 
-    UserManager<IdentityUser> userManager => serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    UserManager<User> userManager => serviceProvider.GetRequiredService<UserManager<User>>();
     RoleManager<IdentityRole> roleManager => serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     public ConsoleManager()
@@ -32,7 +33,7 @@ partial class ConsoleManager
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        services.AddIdentityCore<IdentityUser>()
+        services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();

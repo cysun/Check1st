@@ -1,3 +1,4 @@
+using Check1st.Models;
 using Check1st.Security;
 using Check1st.Services;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -38,7 +39,7 @@ services.AddAuthentication(options =>
 })
 .AddIdentityCookies(options => { });
 
-services.AddIdentityCore<IdentityUser>()
+services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>() // need to be before AddEntityFrameworkStores
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders()
