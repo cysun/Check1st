@@ -33,10 +33,15 @@ partial class ConsoleManager
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        services.AddIdentityCore<User>()
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+        services.AddIdentityCore<User>(options =>
+        {
+            // Current CS3 acccount generator does not include non-alphanumeric characters.
+            // Will change this after I change the CS3 account generator.
+            options.Password.RequireNonAlphanumeric = false;
+        })
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddAuthentication();
 
