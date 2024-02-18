@@ -40,8 +40,6 @@ namespace Check1st.Controllers
                     Assignment = assignment,
                     StudentName = User.Identity.Name,
                 };
-                if (lastConsultation != null)
-                    consultation.Files.AddRange(lastConsultation.Files);
                 _consultationService.AddConsultation(consultation);
                 _logger.LogInformation("{user} created consultation {consultation}", User.Identity.Name, consultation.Id);
                 return RedirectToAction("UploadFiles", new { id = consultation.Id });

@@ -10,7 +10,6 @@ public class Assignment
     public string Name { get; set; }
 
     public string Description { get; set; }
-    public string Prompt { get; set; }
 
     [Required, MaxLength(100)]
     public string AcceptedFileTypes { get; set; } // a comma-separated list of file extensions, e.g. ".html,.java"

@@ -102,8 +102,6 @@ namespace Check1st.Models
 
         public string Description { get; set; }
 
-        public string Prompt { get; set; } = "You are a teacher giving students feedback on their work.";
-
         [Display(Name = "Allowed File Types")]
         public string AcceptedFileTypes { get; set; } = ".html,.java";
 

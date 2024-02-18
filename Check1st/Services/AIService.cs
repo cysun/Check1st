@@ -31,8 +31,11 @@ public class AIService
             DeploymentName = _settings.Model,
             Messages =
             {
-                new ChatRequestSystemMessage(consultation.Assignment.Prompt),
-                new ChatRequestSystemMessage("Format response in Markdown")
+                new ChatRequestSystemMessage("You are a teaching assistant reviewing my solution to an assignment."),
+                new ChatRequestSystemMessage("Format response in Markdown."),
+                new ChatRequestSystemMessage("The following is the assignment:"),
+                new ChatRequestSystemMessage(consultation.Assignment.Description),
+                new ChatRequestSystemMessage("My solution is as follows:"),
             }
         };
 
