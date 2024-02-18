@@ -32,6 +32,22 @@
             </div>
         </div>
         <div class="col-6">
+            <div class="form-floating">
+                <input asp-for="AcceptedFileTypes" class="form-control">
+                <label asp-for="AcceptedFileTypes"></label>
+            </div>
+            <div id="fileTypesHelp" class="form-text mb-3">
+                A a comma-separated list of file extensions, e.g. <span class="font-monospace">.html,.java</span>.
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-floating">
+                <input asp-for="MaxFileSize" class="form-control" required>
+                <label asp-for="MaxFileSize"></label>
+            </div>
+            <div id="fileSizeHelp" class="form-text mb-3">Max size per file in bytes.</div>
+        </div>
+        <div class="col-6">
             <div class="form-floating mb-3">
                 <input asp-for="TimePublished" class="form-control">
                 <label asp-for="TimePublished"></label>
@@ -49,12 +65,12 @@
 </form>
 
 @section Scripts {
-    <script src="https://cdn.tiny.cloud/1/4jeuqf3mhgytuk82mowljcxt0pbcbem4ivn5xorph63kjcfg/tinymce/6/tinymce.min.js"
-            referrerpolicy="origin"></script>
-    <script src="~/tinymce-options.js"></script>
-    <script>
-        $(function () {
-            tinymce.init(tinymceOptions.basic("textarea#Description"));
-        });
-    </script>
+        <script src="https://cdn.tiny.cloud/1/4jeuqf3mhgytuk82mowljcxt0pbcbem4ivn5xorph63kjcfg/tinymce/6/tinymce.min.js"
+                referrerpolicy="origin"></script>
+        <script src="~/tinymce-options.js"></script>
+        <script>
+            $(function () {
+                tinymce.init(tinymceOptions.basic("textarea#Description"));
+            });
+        </script>
 }

@@ -39,6 +39,8 @@ CREATE TABLE "Assignments" (
     "Name" character varying(100) NOT NULL,
     "Description" text,
     "Prompt" text,
+    "AcceptedFileTypes" character varying(100) NOT NULL,
+    "MaxFileSize" integer NOT NULL,
     "TimePublished" timestamp with time zone,
     "TimeClosed" timestamp with time zone,
     "TeacherName" text,
@@ -150,7 +152,7 @@ CREATE INDEX "IX_ConsultationFiles_FilesId" ON "ConsultationFiles" ("FilesId");
 CREATE INDEX "IX_Consultations_AssignmentId" ON "Consultations" ("AssignmentId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240215230626_InitialSchema', '8.0.1');
+VALUES ('20240217235509_InitialSchema', '8.0.1');
 
 COMMIT;
 

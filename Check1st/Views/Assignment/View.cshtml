@@ -26,10 +26,22 @@
     <div class="card-body">@Model.Prompt</div>
 </div>
 
-<div class="row row-cols-2 row-cols-md-4 g-4">
+<div class="row row-cols-2 row-cols-lg-4 g-3">
     <div class="col">
         <div class="card h-100">
-            <div class="card-header">Publish <span class="d-none d-md-inline">Date</span></div>
+            <div class="card-header">Accepted File Types</div>
+            <div class="card-body">@Model.AcceptedFileTypes</div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Max File Size</div>
+            <div class="card-body">@Model.MaxFileSize</div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Publish Date</div>
             <div class="card-body">
                 @if (Model.TimePublished.HasValue)
                 {
@@ -41,7 +53,7 @@
     </div>
     <div class="col">
         <div class="card">
-            <div class="card-header">Close <span class="d-none d-md-inline">Date</span></div>
+            <div class="card-header">Close Date</div>
             <div class="card-body">
                 @if (Model.TimeClosed.HasValue)
                 {

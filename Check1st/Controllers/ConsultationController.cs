@@ -82,6 +82,19 @@ namespace Check1st.Controllers
 
             foreach (var uploadedFile in uploadedFiles)
             {
+                if (uploadedFile.Length > consultation.Assignment.MaxFileSize)
+                {
+                    _logger.LogWarning("Ignore {user} uploaded file due to size: {size}", User.Identity.Name, uploadedFile.Length);
+                    continue;
+                }
+
+                var extension = Path.GetExtension(uploadedFile.FileName);
+                if (extension == ReadOnlySpan<char>.Empty || !consultation.Assignment.AcceptedFileTypes.Contains(extension))
+                {
+                    _logger.LogWarning("Ignore {user} uploaded file due to type: {type}", User.Identity.Name, extension);
+                    continue;
+                }
+
                 var file = await _fileService.UploadFileAsync(uploadedFile, User.Identity.Name);
                 consultation.AddFile(file);
                 _logger.LogInformation("{user} uploaded file {file} to consultation {consultation}",

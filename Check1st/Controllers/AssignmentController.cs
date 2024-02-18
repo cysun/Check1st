@@ -104,6 +104,12 @@ namespace Check1st.Models
 
         public string Prompt { get; set; } = "You are a teacher giving students feedback on their work.";
 
+        [Display(Name = "Allowed File Types")]
+        public string AcceptedFileTypes { get; set; } = ".html,.java";
+
+        [Display(Name = "Max File Size")]
+        public int MaxFileSize { get; set; } = 4096;
+
         [Display(Name = "Publish Time")]
         public DateTime? TimePublished { get; set; }
 
