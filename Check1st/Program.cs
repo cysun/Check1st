@@ -1,6 +1,7 @@
 using Check1st.Models;
 using Check1st.Security;
 using Check1st.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -60,7 +61,11 @@ services.AddAuthorization(options =>
     options.AddPolicy(Constants.Policy.IsAdmin, policy => policy.RequireRole(Constants.Role.Admin.ToString()));
     options.AddPolicy(Constants.Policy.IsAdminOrTeacher, policy =>
         policy.RequireRole(Constants.Role.Admin.ToString(), Constants.Role.Teacher.ToString()));
+    options.AddPolicy(Constants.Policy.CanReadConsultation, policy =>
+        policy.AddRequirements(new CanReadConsultationRequirement()));
 });
+
+services.AddScoped<IAuthorizationHandler, CanReadConsultationHandler>();
 
 services.Configure<ForwardedHeadersOptions>(options =>
 {

@@ -4,6 +4,7 @@ public static class Constants
 {
     public enum Role
     {
+        None = 0,
         Admin,
         Teacher
     }
@@ -12,5 +13,6 @@ public static class Constants
     {
         public const string IsAdmin = "IsAdmin";
         public const string IsAdminOrTeacher = "IsAdminOrTeacher";
+        public const string CanReadConsultation = "CanReadConsultation";
     }
 }

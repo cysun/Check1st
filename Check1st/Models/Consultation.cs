@@ -20,7 +20,7 @@ public class Consultation
     public bool IsCompleted => TimeCompleted != null;
 
     public string Feedback { get; set; } // Feedback by AI
-    public string FeedbackHtml => Markdown.ToHtml(Feedback);
+    public string FeedbackHtml => Feedback != null ? Markdown.ToHtml(Feedback) : "";
 
     public int? FeedbackRating { get; set; } // student's rating of the feeback: 1-5
     public string FeedbackComments { get; set; } // student's comment of the feedback

@@ -1,0 +1,58 @@
+﻿@model List<Consultation>
+@{
+    ViewData["Title"] = "Consultations";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active me-auto">Consultations</li>
+        <li>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary btn-sm" title="New Consultation">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+        </li>
+    </ol>
+</nav>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Assignment</th>
+                <th>Student</th>
+                <th class="d-none d-lg-table-cell">Time</th>
+                <th class="d-none d-md-table-cell">Status</th>
+                <th>Rating</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var consultation in Model)
+            {
+                <tr>
+                    <td>@consultation.Assignment.Name</td>
+                    <td>@consultation.StudentName</td>
+                    <td class="d-none d-lg-table-cell">@consultation.TimeCreated.ToLocalTime().ToString("g")</td>
+                    <td class="d-none d-md-table-cell">
+                        @if (consultation.IsCompleted)
+                        {
+                            <span>Completed</span>
+                        }
+                        else
+                        {
+                            <span class="text-success">Open</span>
+                        }
+                    </td>
+                    <td>@consultation.FeedbackRating</td>
+                    <td>
+                        <a asp-action="View" asp-route-id="@consultation.Id" title="View Consultation"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-three-dots"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,7 +1,9 @@
 ﻿using Check1st.Models;
+using Check1st.Security;
 using Check1st.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Check1st.Security.Constants;
 
 namespace Check1st.Controllers
 {
@@ -13,16 +15,27 @@ namespace Check1st.Controllers
         private readonly AssignmentService _assignmentService;
         private readonly ConsultationService _consultationService;
 
+        private readonly IAuthorizationService _authorizationService;
+
         private readonly ILogger<ConsultationController> _logger;
 
         public ConsultationController(AIService aiService, FileService fileService, AssignmentService assignmentService,
-            ConsultationService consultationService, ILogger<ConsultationController> logger)
+            ConsultationService consultationService, IAuthorizationService authorizationService,
+            ILogger<ConsultationController> logger)
         {
             _aiService = aiService;
             _fileService = fileService;
             _assignmentService = assignmentService;
             _consultationService = consultationService;
+            _authorizationService = authorizationService;
             _logger = logger;
+        }
+
+        public IActionResult Index()
+        {
+            Role role = User.IsInRole(Constants.Role.Admin.ToString()) ? Constants.Role.Admin :
+                User.IsInRole(Constants.Role.Teacher.ToString()) ? Constants.Role.Teacher : Constants.Role.None;
+            return View(_consultationService.GetRecentConsultations(User.Identity.Name, role));
         }
 
         public IActionResult Assignment(int id)
@@ -46,11 +59,23 @@ namespace Check1st.Controllers
             }
         }
 
-        public IActionResult View(int id)
+        public async Task<IActionResult> ViewAsync(int id)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
+            if (consultation == null)
                 return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, consultation, Constants.Policy.CanReadConsultation);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            if (consultation.StudentName == User.Identity.Name)
+            {
+                if (consultation.Feedback == null)
+                    return RedirectToAction("UploadFiles", new { id });
+                else if (!consultation.IsCompleted)
+                    return RedirectToAction("Check", new { id });
+            }
 
             return View(consultation);
         }
@@ -59,11 +84,8 @@ namespace Check1st.Controllers
         public IActionResult UploadFiles(int id)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
-                return NotFound();
-
-            if (consultation.IsCompleted)
-                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+            var result = Verify(consultation);
+            if (result != null) return result;
 
             return View(consultation);
         }
@@ -72,11 +94,8 @@ namespace Check1st.Controllers
         public async Task<IActionResult> UploadFiles(int id, List<IFormFile> uploadedFiles)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
-                return NotFound();
-
-            if (consultation.IsCompleted)
-                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+            var result = Verify(consultation);
+            if (result != null) return result;
 
             foreach (var uploadedFile in uploadedFiles)
             {
@@ -106,11 +125,8 @@ namespace Check1st.Controllers
         public IActionResult RemoveFile(int id, int fileId)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
-                return NotFound();
-
-            if (consultation.IsCompleted)
-                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+            var result = Verify(consultation);
+            if (result != null) return result;
 
             consultation.Files.RemoveAll(f => f.Id == fileId);
             _consultationService.SaveChanges();
@@ -124,11 +140,8 @@ namespace Check1st.Controllers
         public async Task<IActionResult> CheckAsync(int id)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
-                return NotFound();
-
-            if (consultation.IsCompleted)
-                return RedirectToAction("View", new { id });
+            var result = Verify(consultation);
+            if (result != null) return result;
 
             if (consultation.Feedback == null)
             {
@@ -146,11 +159,8 @@ namespace Check1st.Controllers
         public IActionResult Check(int id, string feedbackComments)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
-                return NotFound();
-
-            if (consultation.IsCompleted)
-                return BadRequest("This consultation is already completed");
+            var result = Verify(consultation);
+            if (result != null) return result;
 
             consultation.FeedbackComments = feedbackComments;
             consultation.TimeCompleted = DateTime.UtcNow;
@@ -164,17 +174,28 @@ namespace Check1st.Controllers
         public IActionResult RateFeedback(int id, int rating)
         {
             var consultation = _consultationService.GetConsultation(id);
-            if (consultation == null || consultation.StudentName != User.Identity.Name)
-                return NotFound();
-
-            if (consultation.IsCompleted)
-                return BadRequest("This consultation is already completed");
+            var result = Verify(consultation);
+            if (result != null) return result;
 
             consultation.FeedbackRating = rating;
             _consultationService.SaveChanges();
             _logger.LogInformation("{user} rated feedback for consultation {consultation}", User.Identity.Name, consultation.Id);
 
             return Ok();
+        }
+
+        private IActionResult Verify(Consultation consultation)
+        {
+            if (consultation == null)
+                return NotFound();
+
+            if (consultation.StudentName != User.Identity.Name)
+                return Forbid();
+
+            if (consultation.IsCompleted)
+                return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
+
+            return null;
         }
     }
 }
