@@ -32,6 +32,8 @@ public class Consultation
     public int? PromptTokens { get; set; }
     public int? CompletionTokens { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public void AddFile(File file)
     {
         Files.RemoveAll(f => f.Name == file.Name);

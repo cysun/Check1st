@@ -113,6 +113,7 @@ CREATE TABLE "Consultations" (
     "Model" character varying(100),
     "PromptTokens" integer,
     "CompletionTokens" integer,
+    "IsDeleted" boolean NOT NULL,
     CONSTRAINT "PK_Consultations" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Consultations_Assignments_AssignmentId" FOREIGN KEY ("AssignmentId") REFERENCES "Assignments" ("Id") ON DELETE CASCADE
 );
@@ -151,7 +152,7 @@ CREATE INDEX "IX_ConsultationFiles_FilesId" ON "ConsultationFiles" ("FilesId");
 CREATE INDEX "IX_Consultations_AssignmentId" ON "Consultations" ("AssignmentId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240218071938_InitialSchema', '8.0.1');
+VALUES ('20240219232439_InitialSchema', '8.0.1');
 
 COMMIT;
 

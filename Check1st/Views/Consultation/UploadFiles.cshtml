@@ -56,6 +56,9 @@
 
 <div>
     <button id="check" type="button" class="btn btn-primary">Check</button>
+    <span id="wait" class="d-none ms-2 text-body-secondary fst-italic">
+        Please be patient. GPT-4 is a bit slow. This may take up to one minute.
+    </span>
 </div>
 
 @section StyleSheets {
@@ -85,6 +88,7 @@
             $("#check").click(function () {
                 $(this).prop("disabled", true);
                 $(this).html("<span class='spinner-border spinner-border-sm'></span>");
+                $("#wait").removeClass("d-none");
                 window.location.href = "@Context.Request.PathBase/Consultation/Check/@Model.Id";
             });
         });

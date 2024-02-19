@@ -1,5 +1,4 @@
 ﻿using Check1st.Models;
-using Check1st.Security;
 using Check1st.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,8 +32,8 @@ namespace Check1st.Controllers
 
         public IActionResult Index()
         {
-            Role role = User.IsInRole(Constants.Role.Admin.ToString()) ? Constants.Role.Admin :
-                User.IsInRole(Constants.Role.Teacher.ToString()) ? Constants.Role.Teacher : Constants.Role.None;
+            Role role = User.IsInRole(Role.Admin.ToString()) ? Role.Admin :
+                User.IsInRole(Role.Teacher.ToString()) ? Role.Teacher : Role.None;
             return View(_consultationService.GetRecentConsultations(User.Identity.Name, role));
         }
 
@@ -48,6 +47,16 @@ namespace Check1st.Controllers
                 return RedirectToAction("UploadFiles", new { id = lastConsultation.Id });
             else
             {
+                if (!User.IsInRole(Role.Admin.ToString()) && !User.IsInRole(Role.Teacher.ToString())
+                    && _consultationService.GetConsultationCount(id, User.Identity.Name) >= _aiService.PerAssignmentLimit)
+                {
+                    _logger.LogWarning("{user} reached consultation limit for assignment {assignment}", User.Identity.Name, assignment.Id);
+                    return View("Error", new ErrorViewModel
+                    {
+                        Message = "You have reached the limit of consultations for this assignment"
+                    });
+                }
+
                 var consultation = new Consultation
                 {
                     Assignment = assignment,
@@ -65,7 +74,7 @@ namespace Check1st.Controllers
             if (consultation == null)
                 return NotFound();
 
-            var authResult = await _authorizationService.AuthorizeAsync(User, consultation, Constants.Policy.CanReadConsultation);
+            var authResult = await _authorizationService.AuthorizeAsync(User, consultation, Policy.CanReadConsultation);
             if (!authResult.Succeeded)
                 return Forbid();
 
@@ -182,6 +191,22 @@ namespace Check1st.Controllers
             _logger.LogInformation("{user} rated feedback for consultation {consultation}", User.Identity.Name, consultation.Id);
 
             return Ok();
+        }
+
+        [Authorize(Roles = "Admin,Teacher")]
+        public IActionResult Delete(int id)
+        {
+            var consultation = _consultationService.GetConsultation(id);
+            if (consultation == null)
+                return NotFound();
+
+            if (!User.IsInRole(Role.Admin.ToString()) && consultation.Assignment.TeacherName != User.Identity.Name)
+                return Forbid();
+
+            _consultationService.DeleteConsultation(consultation);
+            _logger.LogInformation("{user} deleted consultation {consultation}", User.Identity.Name, consultation.Id);
+
+            return RedirectToAction("Index");
         }
 
         private IActionResult Verify(Consultation consultation)

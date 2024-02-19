@@ -17,6 +17,10 @@ public class ConsultationService
         .Include(c => c.Assignment).Include(c => c.Files.OrderBy(f => f.TimeUploaded))
         .FirstOrDefault();
 
+    public Consultation GetLastConsultation(int assignmentId, string studentName) => _db.Consultations
+        .Where(c => !c.IsDeleted && c.Assignment.Id == assignmentId && c.StudentName == studentName)
+        .OrderByDescending(c => c.TimeCreated).FirstOrDefault();
+
     public List<Consultation> GetRecentConsultations(string userName, Role role, int days = 7)
     {
         var query = role switch
@@ -26,23 +30,9 @@ public class ConsultationService
             _ => _db.Consultations.Where(c => c.StudentName == userName)
         };
 
-        return query.AsNoTracking().Where(c => c.TimeCreated > DateTime.UtcNow.AddDays(-days))
+        return query.AsNoTracking().Where(c => !c.IsDeleted && c.TimeCreated > DateTime.UtcNow.AddDays(-days))
             .Include(c => c.Assignment).OrderByDescending(c => c.TimeCreated)
             .ToList();
-    }
-
-    public List<Consultation> GetConsultations(int assignmentId, string studentName) => _db.Consultations.AsNoTracking()
-        .Where(c => c.Assignment.Id == assignmentId && c.StudentName == studentName)
-        .OrderByDescending(c => c.TimeCreated)
-        .ToList();
-
-    public Consultation GetLastConsultation(int assignmentId, string studentName)
-    {
-        var consultation = _db.Consultations.Where(c => c.Assignment.Id == assignmentId && c.StudentName == studentName)
-            .OrderByDescending(c => c.TimeCreated).FirstOrDefault();
-        if (consultation != null)
-            _db.Entry(consultation).Collection(c => c.Files).Load();
-        return consultation;
     }
 
     public void AddConsultation(Consultation consultation)
@@ -50,6 +40,16 @@ public class ConsultationService
         _db.Consultations.Add(consultation);
         _db.SaveChanges();
     }
+
+    public void DeleteConsultation(Consultation consultation)
+    {
+        consultation.IsDeleted = true;
+        _db.SaveChanges();
+    }
+
+    public int GetConsultationCount(int assignmentId, string studentName) => _db.Consultations
+        .Where(c => c.Assignment.Id == assignmentId && c.StudentName == studentName)
+        .Count();
 
     public void SaveChanges() => _db.SaveChanges();
 }

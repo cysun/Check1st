@@ -8,6 +8,9 @@ public class AISettings
 {
     public string ApiKey { get; set; }
     public string Model { get; set; }
+
+    // The maximum # of consultations per assignment a student can use
+    public int PerAssignmentLimit { get; set; }
 }
 
 public class AIService
@@ -23,6 +26,8 @@ public class AIService
         _client = new OpenAIClient(_settings.ApiKey);
         _logger = logger;
     }
+
+    public int PerAssignmentLimit => _settings.PerAssignmentLimit;
 
     public async Task<bool> ConsultAsync(Consultation consultation)
     {
