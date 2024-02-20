@@ -42,7 +42,7 @@
             <tr>
                 <td><a asp-controller="File" asp-action="View" asp-route-id="@file.Id">@file.Name</a></td>
                 <td class="d-none d-md-table-cell">@file.GetFormattedSize()</td>
-                <td class="d-none d-lg-table-cell">@file.TimeUploaded.ToString("d")</td>
+                <td class="d-none d-lg-table-cell">@file.TimeUploaded.ToString("g")</td>
                 <td>
                     <a asp-action="RemoveFile" asp-route-id="@Model.Id" asp-route-fileId="@file.Id"
                        class="btn btn-outline-danger btn-sm">

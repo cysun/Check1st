@@ -36,14 +36,14 @@
                         @if (assignment.TimePublished.HasValue)
                         {
                             var color = assignment.IsPublished ? "" : "text-warning";
-                            <span class="@color">@assignment.TimePublished?.ToLocalTime().ToString("d")</span>
+                            <span class="@color">@assignment.TimePublished?.ToLocalTime().ToString("g")</span>
                         }
                     </td>
                     <td class="d-none d-lg-table-cell">
                         @if (assignment.TimeClosed.HasValue)
                         {
                             var color = assignment.IsClosed ? "" : "text-warning";
-                            <span class="@color">@assignment.TimeClosed?.ToLocalTime().ToString("d")</span>
+                            <span class="@color">@assignment.TimeClosed?.ToLocalTime().ToString("g")</span>
                         }
                     </td>
                     <td class="d-none d-lg-table-cell">

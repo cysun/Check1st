@@ -24,6 +24,7 @@
                 <th class="d-none d-lg-table-cell">Time</th>
                 <th class="d-none d-md-table-cell">Status</th>
                 <th>Rating</th>
+                <th class="d-none d-lg-table-cell">Tokens</th>
                 <th></th>
             </tr>
         </thead>
@@ -45,6 +46,7 @@
                         }
                     </td>
                     <td>@consultation.FeedbackRating</td>
+                    <td class="d-none d-lg-table-cell">@consultation.PromptTokens + @consultation.CompletionTokens</td>
                     <td>
                         <a asp-action="View" asp-route-id="@consultation.Id" title="View Consultation"
                            class="btn btn-outline-primary btn-sm">
