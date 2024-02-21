@@ -20,7 +20,10 @@
         <thead>
             <tr>
                 <th>Assignment</th>
-                <th>Student</th>
+                @if (User.IsInRole(Constants.Role.Admin.ToString()) || User.IsInRole(Constants.Role.Teacher.ToString()))
+                {
+                    <th>Student</th>
+                }
                 <th class="d-none d-lg-table-cell">Time</th>
                 <th class="d-none d-md-table-cell">Status</th>
                 <th>Rating</th>
@@ -33,7 +36,10 @@
             {
                 <tr>
                     <td>@consultation.Assignment.Name</td>
-                    <td>@consultation.StudentName</td>
+                    @if (User.IsInRole(Constants.Role.Admin.ToString()) || User.IsInRole(Constants.Role.Teacher.ToString()))
+                    {
+                        <td>@consultation.StudentName</td>
+                    }
                     <td class="d-none d-lg-table-cell">@consultation.TimeCreated.ToLocalTime().ToString("g")</td>
                     <td class="d-none d-md-table-cell">
                         @if (consultation.IsCompleted)
@@ -42,11 +48,16 @@
                         }
                         else
                         {
-                            <span class="text-success">Open</span>
+                            <a asp-action="UploadFiles" asp-route-id="@consultation.Id">Open</a>
                         }
                     </td>
                     <td>@consultation.FeedbackRating</td>
-                    <td class="d-none d-lg-table-cell">@consultation.PromptTokens + @consultation.CompletionTokens</td>
+                    <td class="d-none d-lg-table-cell">
+                        @if (consultation.IsCompleted)
+                        {
+                            @consultation.PromptTokens <text>+</text> @consultation.CompletionTokens
+                        }
+                    </td>
                     <td>
                         <a asp-action="View" asp-route-id="@consultation.Id" title="View Consultation"
                            class="btn btn-outline-primary btn-sm">

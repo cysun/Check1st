@@ -9,17 +9,35 @@
     </ol>
 </nav>
 
-<div class="row">
-    <div class="col-md-7 mb-3">
-        <div class="input-group">
-            <span class="input-group-text">Accepted File Types</span>
-            <span class="form-control">@Model.Assignment.AcceptedFileTypes</span>
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-3">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Accepted File Types</div>
+            <div class="card-body">@Model.Assignment.AcceptedFileTypes</div>
         </div>
     </div>
-    <div class="col-md-5 mb-3">
-        <div class="input-group">
-            <span class="input-group-text">Max File Size</span>
-            <span class="form-control">@Model.Assignment.MaxFileSize B</span>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Max File Size</div>
+            <div class="card-body">@Model.Assignment.MaxFileSize B</div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">Publish Time</div>
+            <div class="card-body">@Model.Assignment.TimePublished?.ToLocalTime().ToString("g")</div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Close Time</div>
+            <div class="card-body">
+                @if (Model.Assignment.TimeClosed.HasValue)
+                {
+                    var color = Model.Assignment.IsClosed ? "" : "text-warning";
+                    <span class="@color">@Model.Assignment.TimeClosed?.ToLocalTime().ToString("g")</span>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -55,7 +73,7 @@
 </table>
 
 <div>
-    <button id="check" type="button" class="btn btn-primary">Check</button>
+    <button id="check" type="button" class="btn btn-primary" disabled="@(Model.Files.Count==0)">Check</button>
     <span id="wait" class="d-none ms-2 text-body-secondary fst-italic">
         Please be patient. GPT-4 is a bit slow. This may take up to one minute.
     </span>

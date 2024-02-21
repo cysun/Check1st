@@ -1,0 +1,80 @@
+Received: from CH2PR06MB6742.namprd06.prod.outlook.com (2603:10b6:610:8f::23)
+ by MN2PR06MB5759.namprd06.prod.outlook.com with HTTPS; Wed, 6 Sep 2023
+ 04:46:08 +0000
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=calstatela.edu;
+Received: from MN2PR06MB5759.namprd06.prod.outlook.com (2603:10b6:208:124::25)
+ by CH2PR06MB6742.namprd06.prod.outlook.com (2603:10b6:610:8f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
+ 2023 04:46:07 +0000
+Received: from MN2PR06MB5759.namprd06.prod.outlook.com
+ ([fe80::e2ae:77ac:2ea3:bb39]) by MN2PR06MB5759.namprd06.prod.outlook.com
+ ([fe80::e2ae:77ac:2ea3:bb39%6]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 04:46:07 +0000
+Message-ID: <4675a57f-7084-d6c3-f720-f97a10107551@calstatela.edu>
+Date: Tue, 5 Sep 2023 21:46:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To: "Sun, Chengyu" <csun@exchange.calstatela.edu>
+From: Chengyu Sun <csun@calstatela.edu>
+Subject: Todo
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MS-Exchange-Organization-ExpirationStartTime: 06 Sep 2023 04:46:07.3304
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id:
+ c3b6626f-a961-4028-be3e-08dbae942f32
+X-MS-Exchange-Organization-AuthSource: MN2PR06MB5759.namprd06.prod.outlook.com
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 14
+X-ClientProxiedBy: PH0P220CA0011.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:510:d3::16) To MN2PR06MB5759.namprd06.prod.outlook.com
+ (2603:10b6:208:124::25)
+X-MS-Exchange-Organization-MessageDirectionality: Originating
+Return-Path: csun@exchange.calstatela.edu
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic:
+ MN2PR06MB5759:EE_|CH2PR06MB6742:EE_|MN2PR06MB5759:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3b6626f-a961-4028-be3e-08dbae942f32
+X-MS-Exchange-AtpMessageProperties: SA|SL
+X-MS-Exchange-Organization-SCL: 1
+X-Microsoft-Antispam: BCL:0;
+X-Forefront-Antispam-Report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR06MB5759.namprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:;DIR:INT;
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3b6626f-a961-4028-be3e-08dbae942f32
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR06MB5759.namprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 04:46:07.5568
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: ce8a2002-448f-4f58-82b1-d86f73e3afdd
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: upNHJC9gp697iq/9xz/uhha974Osc8H4LkhIcdV3zAyIjCOP+k2NwREDw5+L1AG+U9xEm/EZL9TIHoQP1CdonQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR06MB6742
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.3204281
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.6745.026
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;auth:0;dest:I;ENG:(910001)(944506478)(944626604)(920097)(425001)(930097)(140003)(1420103);
+X-Microsoft-Antispam-Message-Info:
+	BVvMb5vkonbUHttX5vpc5QAvTFijcDZY4RY73qinel0ytsoKHub3+OUNhuaakaorOEmdkFKFFBz8WUAYLtRHOLytdjZdN6+jdHcnsk7+pchTwtzKhGPucrW5pM+86jj8QKlLkqE0C1F8gXg+C/bxyVQ+hE1yUKgHXOMgeI21vnuD5lJLBe0UTKVmnsjXjEwl43EqW50IvDoeFiEefdIQ/nIyeW6sv+08cJU6MwBha0UGfLheuZiBmrPb6JkqNKy2RxbqpGkdbL/mH6W0mBMwZFUfKfZpomDFM1Bf+NW11rqyUr9q/WMVpM6wcDX4Mfj1yzL380c3KlOJXVf3dsIrF+b6bnTxOzghTnXZDux7TUf2oWyIt1K1UvT54zrOFZ19F8z2WDpEB647Q+XhkJbMEOmIR5r/jPtvW2lpnvpsevOM7Y7KxgX9sjEH6IxMYqyc+ZkBzL6+7YEa7dvKJ6dpe18JffmC16TG8/REZZghIty3hcFNlmQCUE5SRIpsQKa0L8EgI4lxUxdcArnaNiRZ5it0+Q2nKVKBvByXs2NILibT7iPkNzoXShrrVvqXvo1/3uJ+1tlR18mBNZ9ghw+Ea1EQm92BprUAF/zuL+uV/G8h9P0X5KpPSBwBBUGRAdqREHaCbe6FTY9c8YqEJrsq7eRXjkThbREKv9+/29ltfLj4Iq8JRmbIeH+cpfw84lGTMIbX3tsXvxNjOJbfnn4/qw==
+MIME-Version: 1.0
+
+Use ChatGPT to
+
+. Generate programming exercises based on certain criteria, e.g. 
+containing certain control structure or at certain difficulty level
+
+. Ask ChatGPT to increase/decrease difficulty level
+
+. Ask ChatGPT to identify issues in the code
+
+. Use ChatGPT to automatically generate study plan
+
+Explore ChatGPT API
+
+

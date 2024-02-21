@@ -77,12 +77,12 @@
     </table>
 </div>
 
-<form method="post">
+<form asp-action="CommentFeedback" asp-route-id="@Model.Id" method="post">
     <div class="mb-3">
-        <label for="feedbackComments" class="form-label">Additional comments about the AI feedback:</label>
-        <textarea class="form-control" id="feedbackComments" name="feedbackComments" rows="3"></textarea>
+        <label for="comments" class="form-label">Additional comments about the AI feedback:</label>
+        <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
     </div>
-    <button class="btn btn-primary">Complete</button>
+    <button class="btn btn-primary">Save</button>
 </form>
 
 @section Scripts {

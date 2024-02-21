@@ -52,6 +52,7 @@ public class AIService
         consultation.Model = _settings.Model;
         consultation.PromptTokens = response.Value.Usage.PromptTokens;
         consultation.CompletionTokens = response.Value.Usage.CompletionTokens;
+        consultation.TimeCompleted = DateTime.UtcNow;
 
         bool success = response.Value.Choices[0].FinishReason == CompletionsFinishReason.Stopped;
         if (success)

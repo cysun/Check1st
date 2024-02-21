@@ -149,12 +149,12 @@ namespace Check1st.Controllers
         public async Task<IActionResult> CheckAsync(int id)
         {
             var consultation = _consultationService.GetConsultation(id);
-            var result = Verify(consultation);
+            var result = Verify(consultation, false);
             if (result != null) return result;
 
-            if (consultation.Feedback == null)
+            if (!consultation.IsCompleted)
             {
-                consultation.Files.ForEach(f => _fileService.LoadContent(f));
+                consultation.Files.ForEach(_fileService.LoadContent);
                 var success = await _aiService.ConsultAsync(consultation);
                 _consultationService.SaveChanges();
                 _logger.LogInformation("{user} received feedback for consultation {consultation}. Success: {success}",
@@ -164,33 +164,35 @@ namespace Check1st.Controllers
             return View(consultation);
         }
 
-        [HttpPost]
-        public IActionResult Check(int id, string feedbackComments)
-        {
-            var consultation = _consultationService.GetConsultation(id);
-            var result = Verify(consultation);
-            if (result != null) return result;
-
-            consultation.FeedbackComments = feedbackComments;
-            consultation.TimeCompleted = DateTime.UtcNow;
-            _consultationService.SaveChanges();
-            _logger.LogInformation("{user} completed consultation {consultation}", User.Identity.Name, consultation.Id);
-
-            return RedirectToAction("Index", "Home");
-        }
-
         [HttpPut("Consultation/{id}/FeedbackRating")]
         public IActionResult RateFeedback(int id, int rating)
         {
             var consultation = _consultationService.GetConsultation(id);
-            var result = Verify(consultation);
+            var result = Verify(consultation, false);
             if (result != null) return result;
 
             consultation.FeedbackRating = rating;
             _consultationService.SaveChanges();
-            _logger.LogInformation("{user} rated feedback for consultation {consultation}", User.Identity.Name, consultation.Id);
+            _logger.LogInformation("{user} rated consultation {consultation}", User.Identity.Name, consultation.Id);
 
             return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult CommentFeedback(int id, string comments)
+        {
+            if (!string.IsNullOrWhiteSpace(comments))
+            {
+                var consultation = _consultationService.GetConsultation(id);
+                var result = Verify(consultation, false);
+                if (result != null) return result;
+
+                consultation.FeedbackComments = comments;
+                _consultationService.SaveChanges();
+                _logger.LogInformation("{user} commented on {consultation}", User.Identity.Name, consultation.Id);
+            }
+
+            return RedirectToAction("Index", "Consultation");
         }
 
         [Authorize(Roles = "Admin,Teacher")]
@@ -209,7 +211,7 @@ namespace Check1st.Controllers
             return RedirectToAction("Index");
         }
 
-        private IActionResult Verify(Consultation consultation)
+        private IActionResult Verify(Consultation consultation, bool checkCompletion = true)
         {
             if (consultation == null)
                 return NotFound();
@@ -217,7 +219,7 @@ namespace Check1st.Controllers
             if (consultation.StudentName != User.Identity.Name)
                 return Forbid();
 
-            if (consultation.IsCompleted)
+            if (checkCompletion && consultation.IsCompleted)
                 return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
 
             return null;
