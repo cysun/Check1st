@@ -122,9 +122,12 @@ namespace Check1st.Controllers
                 }
 
                 var file = await _fileService.UploadFileAsync(uploadedFile, User.Identity.Name);
-                consultation.AddFile(file);
-                _logger.LogInformation("{user} uploaded file {file} to consultation {consultation}",
-                    User.Identity.Name, file.Id, consultation.Id);
+                if (file != null)
+                {
+                    consultation.AddFile(file);
+                    _logger.LogInformation("{user} uploaded file {file} to consultation {consultation}",
+                        User.Identity.Name, file.Id, consultation.Id);
+                }
             }
             _consultationService.SaveChanges();
 
@@ -173,7 +176,7 @@ namespace Check1st.Controllers
 
             consultation.FeedbackRating = rating;
             _consultationService.SaveChanges();
-            _logger.LogInformation("{user} rated consultation {consultation}", User.Identity.Name, consultation.Id);
+            _logger.LogInformation("{user} rated {rating} of consultation {consultation}", User.Identity.Name, rating, consultation.Id);
 
             return Ok();
         }

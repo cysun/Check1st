@@ -5,7 +5,15 @@
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-        <li class="breadcrumb-item active">@Model.Assignment.Name</li>
+        <li class="breadcrumb-item active me-auto">@Model.Assignment.Name</li>
+        @if (User.IsInRole(Constants.Role.Admin.ToString()))
+        {
+            <li>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm" title="Delete Consultation">
+                    <i class="bi bi-trash-fill"></i>
+                </a>
+            </li>
+        }
     </ol>
 </nav>
 

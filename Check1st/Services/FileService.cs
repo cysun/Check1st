@@ -40,6 +40,12 @@ public class FileService
             };
         }
 
+        if (string.IsNullOrWhiteSpace(file.Content.Text))
+        {
+            _logger.LogWarning("Ignore {user} uploaded file due to empty content: {file}", ownerName, name);
+            return null;
+        }
+
         _db.Files.Add(file);
         _db.SaveChanges();
         _logger.LogInformation("File saved to database: {file}", name);

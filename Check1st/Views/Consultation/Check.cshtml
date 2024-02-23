@@ -92,7 +92,7 @@
                 $.ajax({
                     url: "@Context.Request.PathBase/Consultation/@Model.Id/FeedbackRating",
                     method: "put",
-                    data: { rating: $(this).data("value") },
+                    data: { rating: $(this).attr("data-value") },
                     context: this,
                     success: function () {
                         $("td").removeClass();

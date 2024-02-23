@@ -22,7 +22,7 @@ public class Consultation
     public string Feedback { get; set; } // Feedback by AI
     public string FeedbackHtml => Feedback != null ? Markdown.ToHtml(Feedback) : "";
 
-    public int? FeedbackRating { get; set; } // student's rating of the feeback: 1-5
+    public int? FeedbackRating { get; set; } // student's rating of the feeback: 1-4
     public string FeedbackComments { get; set; } // student's comment of the feedback
 
     // Service usage properties
