@@ -16,7 +16,7 @@
 
 @if (Model.Count > 0)
 {
-    <table class="table table-striped align-middle">
+    <table id="consultations" class="table table-striped align-middle">
         <thead>
             <tr>
                 <th>Assignment</th>
@@ -24,11 +24,11 @@
                 {
                     <th>Student</th>
                 }
-                <th class="d-none d-lg-table-cell">Time</th>
+                <th class="d-none d-lg-table-cell text-start">Time</th>
                 <th class="d-none d-md-table-cell">Status</th>
-                <th>Rating</th>
-                <th class="d-none d-lg-table-cell">Tokens</th>
-                <th></th>
+                <th class="text-start">Rating</th>
+                <th class="d-none d-lg-table-cell" data-dt-order="disable">Tokens</th>
+                <th data-dt-order="disable"></th>
             </tr>
         </thead>
         <tbody>
@@ -40,18 +40,9 @@
                     {
                         <td>@consultation.StudentName</td>
                     }
-                    <td class="d-none d-lg-table-cell">@consultation.TimeCreated.ToLocalTime().ToString("g")</td>
-                    <td class="d-none d-md-table-cell">
-                        @if (consultation.IsCompleted)
-                        {
-                            <span>Completed</span>
-                        }
-                        else
-                        {
-                            <a asp-action="UploadFiles" asp-route-id="@consultation.Id">Open</a>
-                        }
-                    </td>
-                    <td>@consultation.FeedbackRating</td>
+                    <td class="d-none d-lg-table-cell text-start">@consultation.TimeCreated.ToLocalTime().ToString("g")</td>
+                    <td class="d-none d-md-table-cell">@(consultation.IsCompleted ? "Completed" : "Open")</td>
+                    <td class="text-start">@consultation.FeedbackRating</td>
                     <td class="d-none d-lg-table-cell">
                         @if (consultation.IsCompleted)
                         {
@@ -68,4 +59,24 @@
             }
         </tbody>
     </table>
+}
+
+@section StyleSheets {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css" />
+}
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(function () {
+            DataTable.datetime("M/d/yyyy h:m a");
+            let table = new DataTable("#consultations", {
+                paging: false,
+                searching: false,
+                info: false,
+                order: []
+            });
+        });
+    </script>
 }

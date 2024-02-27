@@ -78,13 +78,8 @@ namespace Check1st.Controllers
             if (!authResult.Succeeded)
                 return Forbid();
 
-            if (consultation.StudentName == User.Identity.Name)
-            {
-                if (consultation.Feedback == null)
-                    return RedirectToAction("UploadFiles", new { id });
-                else if (!consultation.IsCompleted)
-                    return RedirectToAction("Check", new { id });
-            }
+            if (consultation.StudentName == User.Identity.Name && !consultation.IsCompleted)
+                return RedirectToAction("Check", new { id });
 
             return View(consultation);
         }
