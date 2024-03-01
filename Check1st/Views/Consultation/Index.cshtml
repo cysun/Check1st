@@ -14,19 +14,36 @@
     </ol>
 </nav>
 
-@if (Model.Count > 0)
+@if (ViewBag.Assignments.Count > 1)
+{
+    <form method="get" class="d-inline-flex">
+        <select name="assignmentId" class="form-select">
+            @foreach (var assignment in ViewBag.Assignments)
+            {
+                if (assignment.Id == ViewBag.Assignment.Id)
+                {
+                    <option value="@assignment.Id" selected>@assignment.Name</option>
+                }
+                else
+                {
+                    <option value="@assignment.Id">@assignment.Name</option>
+                }
+            }
+        </select>
+    </form>
+}
+@if (Model != null && Model.Count > 0)
 {
     <table id="consultations" class="table table-striped align-middle">
         <thead>
             <tr>
-                <th>Assignment</th>
                 @if (User.IsInRole(Constants.Role.Admin.ToString()) || User.IsInRole(Constants.Role.Teacher.ToString()))
                 {
                     <th>Student</th>
                 }
-                <th class="d-none d-lg-table-cell text-start">Time</th>
-                <th class="d-none d-md-table-cell">Status</th>
-                <th class="text-start">Rating</th>
+                <th class="text-start">Time</th>
+                <th class="d-none d-lg-table-cell">Status</th>
+                <th class="d-none d-md-table-cell text-start">Rating</th>
                 <th class="d-none d-lg-table-cell" data-dt-order="disable">Tokens</th>
                 <th data-dt-order="disable"></th>
             </tr>
@@ -35,14 +52,13 @@
             @foreach (var consultation in Model)
             {
                 <tr>
-                    <td>@consultation.Assignment.Name</td>
                     @if (User.IsInRole(Constants.Role.Admin.ToString()) || User.IsInRole(Constants.Role.Teacher.ToString()))
                     {
                         <td>@consultation.StudentName</td>
                     }
-                    <td class="d-none d-lg-table-cell text-start">@consultation.TimeCreated.ToLocalTime().ToString("g")</td>
-                    <td class="d-none d-md-table-cell">@(consultation.IsCompleted ? "Completed" : "Open")</td>
-                    <td class="text-start">@consultation.FeedbackRating</td>
+                    <td class="text-start">@consultation.TimeCreated.ToLocalTime().ToString("g")</td>
+                    <td class="d-none d-lg-table-cell">@(consultation.IsCompleted ? "Completed" : "Open")</td>
+                    <td class="d-none d-md-table-cell text-start">@consultation.FeedbackRating</td>
                     <td class="d-none d-lg-table-cell">
                         @if (consultation.IsCompleted)
                         {
@@ -76,6 +92,9 @@
                 searching: false,
                 info: false,
                 order: []
+            });
+            $("select").change(function () {
+                $("form").submit();
             });
         });
     </script>

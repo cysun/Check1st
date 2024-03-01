@@ -18,6 +18,16 @@ public class AssignmentService
         .OrderByDescending(a => a.TimeClosed).ThenBy(a => a.Name)
         .ToList();
 
+    public List<Assignment> GetAssignmentsByTeacher(string teacherName) => _db.Assignments.AsNoTracking()
+        .Where(a => !a.IsDeleted && a.TeacherName == teacherName)
+        .OrderByDescending(a => a.TimeClosed).ThenBy(a => a.Name)
+        .ToList();
+
+    public List<Assignment> GetAssignmentsByStudent(string studentName) => _db.Assignments.AsNoTracking()
+        .Where(a => !a.IsDeleted && _db.Consultations.Any(c => c.AssignmentId == a.Id && c.StudentName == studentName))
+        .OrderBy(a => a.Name)
+        .ToList();
+
     public List<Assignment> GetCurrentAssignments() => _db.Assignments.AsNoTracking()
         .Where(a => !a.IsDeleted && a.TimePublished != null && a.TimePublished < DateTime.UtcNow
             && (a.TimeClosed == null || a.TimeClosed > DateTime.UtcNow))

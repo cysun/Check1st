@@ -30,11 +30,39 @@ namespace Check1st.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? assignmentId)
         {
-            Role role = User.IsInRole(Role.Admin.ToString()) ? Role.Admin :
-                User.IsInRole(Role.Teacher.ToString()) ? Role.Teacher : Role.None;
-            return View(_consultationService.GetRecentConsultations(User.Identity.Name, role));
+            Assignment assignment = null;
+            if (assignmentId.HasValue)
+            {
+                assignment = _assignmentService.GetAssignment((int)assignmentId);
+                if (assignment == null || assignment.IsDeleted)
+                    return NotFound();
+            }
+
+            List<Assignment> assignments;
+            if (User.IsInRole(Role.Admin.ToString()))
+                assignments = _assignmentService.GetAssignments();
+            else if (User.IsInRole(Role.Teacher.ToString()))
+                assignments = _assignmentService.GetAssignmentsByTeacher(User.Identity.Name);
+            else
+                assignments = _assignmentService.GetAssignmentsByStudent(User.Identity.Name);
+
+            if (assignment == null)
+                assignment = assignments.FirstOrDefault();
+
+            List<Consultation> consultations = null;
+            if (assignment != null)
+            {
+                if (User.IsInRole(Role.Admin.ToString()) || User.IsInRole(Role.Teacher.ToString()))
+                    consultations = _consultationService.GetConsultations(assignment.Id);
+                else
+                    consultations = _consultationService.GetConsultations(assignment.Id, User.Identity.Name);
+            }
+
+            ViewBag.Assignment = assignment;
+            ViewBag.Assignments = assignments;
+            return View(consultations);
         }
 
         public IActionResult Assignment(int id)

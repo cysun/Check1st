@@ -17,6 +17,16 @@ public class ConsultationService
         .Include(c => c.Assignment).Include(c => c.Files.OrderBy(f => f.TimeUploaded))
         .FirstOrDefault();
 
+    public List<Consultation> GetConsultations(int assignmentId) => _db.Consultations.AsNoTracking()
+        .Where(c => !c.IsDeleted && c.Assignment.Id == assignmentId)
+        .OrderByDescending(c => c.TimeCreated)
+        .ToList();
+
+    public List<Consultation> GetConsultations(int assignmentId, string studentName) => _db.Consultations.AsNoTracking()
+        .Where(c => !c.IsDeleted && c.Assignment.Id == assignmentId && c.StudentName == studentName)
+        .OrderByDescending(c => c.TimeCreated)
+        .ToList();
+
     public Consultation GetLastConsultation(int assignmentId, string studentName) => _db.Consultations
         .Where(c => !c.IsDeleted && c.Assignment.Id == assignmentId && c.StudentName == studentName)
         .OrderByDescending(c => c.TimeCreated).FirstOrDefault();
