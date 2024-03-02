@@ -2,6 +2,7 @@
 using Check1st.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using static Check1st.Security.Constants;
 
 namespace Check1st.Controllers
@@ -249,6 +250,34 @@ namespace Check1st.Controllers
                 return View("Error", new ErrorViewModel { Message = "This consultation is already completed" });
 
             return null;
+        }
+
+        public IActionResult DownloadCsv()
+        {
+            List<Consultation> consultations;
+            if (User.IsInRole(Role.Admin.ToString()))
+                consultations = _consultationService.GetConsultations();
+            else if (User.IsInRole(Role.Teacher.ToString()))
+                consultations = _consultationService.GetConsultationsAsTeacher(User.Identity.Name);
+            else
+                consultations = _consultationService.GetConsultationsAsStudent(User.Identity.Name);
+
+            string[] properties = {"Id", "AssignmentId", "StudentName", "TimeCreated", "TimeCompleted",
+                "FeedbackRating", "Model", "PromptTokens", "CompletionTokens"};
+            var csv = new StringBuilder();
+            csv.AppendLine(string.Join(",", properties));
+            foreach (var consultation in consultations)
+            {
+                csv.AppendLine(string.Join(",", properties.Select(p => p switch
+                {
+                    "TimeCreated" => consultation.TimeCreated.ToString("yyyy-MM-dd HH:mm:ss"),
+                    "TimeCompleted" => consultation.TimeCompleted?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+                    _ => consultation.GetType().GetProperty(p).GetValue(consultation)?.ToString()
+                })));
+            }
+
+            var filename = $"consultations_{DateTime.Now:yyyyMMdd}.csv";
+            return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", filename);
         }
     }
 }

@@ -5,6 +5,7 @@ using Check1st.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace Check1st.Controllers
 {
@@ -89,6 +90,27 @@ namespace Check1st.Controllers
             _logger.LogInformation("{user} deleted assignment {assignment}", User.Identity.Name, id);
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult DownloadCsv()
+        {
+            var assignments = _assignmentService.GetAssignments();
+
+            string[] properties = { "Id", "Name", "TimePublished", "TimeClosed", "TeacherName" };
+            var csv = new StringBuilder();
+            csv.AppendLine(string.Join(",", properties));
+            foreach (var assignment in assignments)
+            {
+                csv.AppendLine(string.Join(",", properties.Select(p => p switch
+                {
+                    "TimePublished" => assignment.TimePublished?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+                    "TimeClosed" => assignment.TimeClosed?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+                    _ => assignment.GetType().GetProperty(p).GetValue(assignment)?.ToString()
+                })));
+            }
+
+            var filename = $"assignments_{DateTime.Now:yyyyMMdd}.csv";
+            return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", filename);
         }
     }
 }
