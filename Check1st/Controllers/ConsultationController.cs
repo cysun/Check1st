@@ -198,6 +198,12 @@ namespace Check1st.Controllers
             var result = Verify(consultation, false);
             if (result != null) return result;
 
+            if (rating < 1 || rating > 4)
+            {
+                _logger.LogWarning("{user} rated {rating} of consultation {consultation}", User.Identity.Name, rating, consultation.Id);
+                return BadRequest("Rating must be between 1 and 5");
+            }
+
             consultation.FeedbackRating = rating;
             _consultationService.SaveChanges();
             _logger.LogInformation("{user} rated {rating} of consultation {consultation}", User.Identity.Name, rating, consultation.Id);
